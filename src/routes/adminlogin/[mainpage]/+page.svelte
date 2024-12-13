@@ -33,7 +33,7 @@
         
           <button 
           class="text-sm py-2 px-4 rounded-md bg-orange-500 text-white font-semibold hover:bg-orange-600 transition duration-200"
-          on:click={()=>goto('/login/'+$page.params.mainpage+"/dashboard")}
+          on:click={()=>goto('/adminlogin/'+$page.params.mainpage+"/reportpage")}
 
   >
  View Report

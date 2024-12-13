@@ -1,44 +1,44 @@
 <script>
-    import { goto } from '$app/navigation';
-    import { onMount } from 'svelte';
+  import { goto } from '$app/navigation';
+  import { onMount } from 'svelte';
 
-    let email = '';
-    let password = '';
-    let loading = false;
-    let errorMessage = '';
-    let showError = false;
+  let email = '';
+  let password = '';
+  let loading = false;
+  let errorMessage = '';
+  let showError = false;
 
-    const handleLogin = async () => {
-        loading = true;
-        showError = false;
-        errorMessage = '';
+  const handleLogin = async () => {
+      loading = true;
+      showError = false;
+      errorMessage = '';
 
-        try {
-            const response = await fetch("http://localhost:8000/", {
-                method: "POST",
-                body: JSON.stringify({ email, password }),
-            });
+      try {
+          const response = await fetch("http://localhost:8000/login", {
+              method: "POST",
+              body: JSON.stringify({ email, password }),
+          });
 
-            if (response.ok) {
-                const data = await response.json();
-                console.log("Login successful:", data);
-                goto("/login/"+data.message);
-            } else {
-                const jsonResponse = await response.json();
-                errorMessage = jsonResponse.message || 'Invalid email or password.';
-                showError = true;
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            errorMessage = 'Failed to communicate with the server. Please try again later.';
-            showError = true;
-        } finally {
-            loading = false;
-            setTimeout(() => {
-                showError = false;
-            }, 3000);
-        }
-    };
+          if (response.ok) {
+              const data = await response.json();
+              console.log("Login successful:", data);
+              goto("/adminlogin/"+data.message);
+          } else {
+              const jsonResponse = await response.json();
+              errorMessage = jsonResponse.message || 'Invalid email or password.';
+              showError = true;
+          }
+      } catch (error) {
+          console.error("Error:", error);
+          errorMessage = 'Failed to communicate with the server. Please try again later.';
+          showError = true;
+      } finally {
+          loading = false;
+          setTimeout(() => {
+              showError = false;
+          }, 3000);
+      }
+  };
 </script>
 
 
