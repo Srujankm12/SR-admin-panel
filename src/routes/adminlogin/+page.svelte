@@ -6,12 +6,16 @@
   let password = '';
   let loading = false;
   let errorMessage = '';
+  let successMessage = '';
   let showError = false;
+  let showSuccess = false;
 
   const handleLogin = async () => {
       loading = true;
       showError = false;
+      showSuccess = false;
       errorMessage = '';
+      successMessage = '';
 
       try {
           const response = await fetch("http://localhost:8000/login", {
@@ -22,7 +26,11 @@
           if (response.ok) {
               const data = await response.json();
               console.log("Login successful:", data);
-              goto("/adminlogin/"+data.message);
+              successMessage = "Login successful! Redirecting...";
+              showSuccess = true;
+              setTimeout(() => {
+                  goto("/adminlogin/" + data.message);
+              }, 2000); // Redirect after a short delay
           } else {
               const jsonResponse = await response.json();
               errorMessage = jsonResponse.message || 'Invalid email or password.';
@@ -36,10 +44,13 @@
           loading = false;
           setTimeout(() => {
               showError = false;
+              showSuccess = false;
           }, 3000);
       }
   };
 </script>
+
+
 
 
   
@@ -54,6 +65,18 @@
         
         </p>
       </div>
+      {#if showError}
+<div class="bg-white border border-orange-500 text-orange-600 font-medium p-4 rounded mb-4">
+    {errorMessage}
+</div>
+{/if}
+
+{#if showSuccess}
+<div class="bg-orange-100 text-orange-800 font-medium p-4 rounded mb-4">
+    {successMessage}
+</div>
+{/if}
+
   
       <!-- Login Form -->
       <form on:submit|preventDefault={handleLogin} class="space-y-6">
@@ -84,12 +107,15 @@
           />
         </div>
         <button
-          type="submit"
-          class="w-full bg-orange-600 text-white font-semibold py-3 px-4 rounded-lg shadow-lg hover:bg-orange-700 focus:outline-none focus:ring focus:ring-orange-300 transition"
-
-        >
-          Login
-        </button>
+        type="submit"
+        class="w-full flex justify-center items-center bg-orange-600 text-white font-semibold py-3 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 hover:bg-orange-700 transition"
+    >
+        {#if loading}
+            <div class="animate-spin rounded-full h-6 w-6 border-t-4 border-white border-solid"></div>
+        {:else}
+            Login
+        {/if}
+    </button>
       </form>
   
       <!-- Footer -->
