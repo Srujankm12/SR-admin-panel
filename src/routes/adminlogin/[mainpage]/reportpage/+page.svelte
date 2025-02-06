@@ -1,115 +1,154 @@
 <script>
     import { onMount } from "svelte";
+    import { fade } from "svelte/transition";
 
     let data = [];
-    let isLoading = true; // Add loading state
-    const userId = "6143feaa-1a69-4519-9f4b-47219e81909d"; 
-    const apiUrl = `http://localhost:8000/getdata/${userId}`;
-
-    // State for expanded row details
+    let filteredData = [];
+    let isLoading = true;
+    let searchQuery = "";
+    let isModalOpen = false;
+    let employeeToDelete = null;
+    let successMessage = "";
+    let errorMessage = "";
     let expandedRow = null;
 
-    // Fetch data from the API
+    const apiUrl = `http://localhost:8000/admin/fetch`;
+    const deleteUrl = `http://localhost:8000/admin/delete/`;
+
     onMount(async () => {
         try {
             const response = await fetch(apiUrl);
             if (response.ok) {
                 const jsonResponse = await response.json();
-                data = Array.isArray(jsonResponse) ? jsonResponse : [jsonResponse]; // Ensure it's an array
+                data = Array.isArray(jsonResponse) ? jsonResponse : [jsonResponse];
+                filteredData = [...data];
             } else {
                 console.error("Failed to fetch data:", response.statusText);
             }
         } catch (error) {
             console.error("Error fetching data:", error);
         } finally {
-            isLoading = false; // Set loading state to false after data is fetched
+            isLoading = false;
         }
     });
+
+    function filterResults() {
+        const query = searchQuery.toLowerCase();
+        filteredData = data.filter((row) => {
+            const formattedDate = new Date(row.report_date).toLocaleDateString("en-GB");
+            return (
+                row.employee_name.toLowerCase().includes(query) ||
+                formattedDate.includes(query)
+            );
+        });
+    }
+
+    function confirmDelete(employee) {
+        employeeToDelete = employee;
+        isModalOpen = true;
+    }
+
+    async function deleteEmployee() {
+        if (!employeeToDelete) return;
+        const { emp_id, employee_name } = employeeToDelete;
+
+        const response = await fetch(deleteUrl + emp_id, { method: "GET" });
+
+        if (response.ok) {
+            filteredData = filteredData.filter((row) => row.emp_id !== emp_id);
+            successMessage = `Successfully deleted report for ${employee_name}`;
+        } else {
+            errorMessage = `Failed to delete report for ${employee_name}`;
+        }
+
+        isModalOpen = false;
+        employeeToDelete = null;
+
+        setTimeout(() => {
+            successMessage = "";
+            errorMessage = "";
+        }, 4000);
+    }
+
+    function closeModal() {
+        isModalOpen = false;
+        employeeToDelete = null;
+    }
 </script>
 
-<div class="min-h-screen flex flex-col">
+<!-- Success & Error Message -->
+{#if successMessage || errorMessage}
+<div class="fixed bottom-14 right-5 bg-black text-white font-semibold p-4 rounded-lg shadow-2xl duration-300 flex items-center space-x-2"
+     transition:fade>
+    <i class={successMessage ? "fa-solid fa-circle-check text-green-500" : "fa-solid fa-circle-exclamation text-red-500"}></i>
+    <span>{successMessage || errorMessage}</span>
+</div>
+{/if}
+
+<div class="min-h-screen flex flex-col bg-gray-100 text-gray-900">
     <!-- Header -->
-    <header class="bg-gradient-to-r from-orange-600 to-orange-500 text-white shadow-lg">
-        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
-          <!-- Logo and Branding -->
-          <div class="flex items-center space-x-4">
-            <img src="/logo.jpeg" alt="SRA BAO Logo" class="w-16 h-16 rounded-full border-4 border-white shadow-md" />
-            <div>
-              <h1 class="text-3xl font-extrabold leading-tight tracking-wide">SRA BAO</h1>
-              <p class="text-sm font-medium opacity-90">Daily Reporting System</p>
+    <header class="bg-black text-white py-4 shadow-lg">
+        <div class="container mx-auto flex items-center justify-between px-6">
+            <div class="flex items-center space-x-3">
+                <img src="/logo.jpeg" alt="SRA BAO Logo" class="w-12 h-12 rounded-full border-2 border-white shadow-md" />
+                <div>
+                    <h1 class="text-xl font-bold">SRA BAO</h1>
+                    <p class="text-xs opacity-75">Daily Reporting System</p>
+                </div>
             </div>
-          </div>
-      
-         
+            <input 
+                type="text" 
+                bind:value={searchQuery} 
+                on:input={filterResults} 
+                placeholder="Search reports..."
+                class="px-4 py-2 text-sm rounded-lg focus:ring-2 focus:ring-white bg-white text-black w-64 outline-none shadow-sm border"
+            />
         </div>
-      </header>
+    </header>
 
     <!-- Main Content -->
-    <main class="flex-grow bg-gradient-to-br from-orange-100 via-white to-orange-50 p-8">
-        <h1 class="text-4xl font-extrabold text-orange-700 mb-8 text-center">Work Report Table</h1>
-
-        <!-- Loading Spinner -->
+    <main class="flex-grow bg-white p-8">
         {#if isLoading}
-            <div class="fixed inset-0 flex items-center justify-center z-40 bg-white bg-opacity-75">
-                <div class="w-16 h-16 border-6 border-t-8 border-orange-500 border-solid rounded-full animate-spin"></div>
+            <div class="flex justify-center items-center h-64">
+                <div class="w-16 h-16 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
             </div>
         {:else}
-            <div class="overflow-x-auto rounded-lg shadow-2xl">
-                <table class="w-full text-left border-collapse bg-white rounded-lg">
-                    <!-- Table Header -->
-                    <thead class="bg-orange-600 text-white">
+            <div class="overflow-x-auto rounded-lg shadow-md bg-white">
+                <table class="w-full text-left border-collapse">
+                    <thead class="bg-black text-white">
                         <tr>
-                            <th class="px-6 py-4 text-sm font-semibold uppercase w-32 text-center">Report Date</th>
-                            <th class="px-6 py-4 text-sm font-semibold uppercase w-32 text-center">Employee Name</th>
-                            <th class="px-6 py-4 text-sm font-semibold uppercase w-24 text-center">Actions</th>
+                            <th class="px-6 py-3 text-sm font-semibold uppercase text-center">Report Date</th>
+                            <th class="px-6 py-3 text-sm font-semibold uppercase text-center">Employee Name</th>
+                            <th class="px-6 py-3 text-sm font-semibold uppercase text-center">Premises</th>
+                            <th class="px-6 py-3 text-sm font-semibold uppercase text-center">Site Location</th>
+                            <th class="px-6 py-3 text-sm font-semibold uppercase text-center">Client Name</th>
+                            <th class="px-6 py-3 text-sm font-semibold uppercase text-center">Actions</th>
                         </tr>
                     </thead>
-                    <!-- Table Body -->
                     <tbody>
-                        {#if data.length === 0}
+                        {#if filteredData.length === 0}
                             <tr>
-                                <td colspan="3" class="px-6 py-4 text-center text-gray-500">
-                                    No data available
+                                <td colspan="6" class="px-6 py-8 text-center text-gray-500 text-lg">
+                                    No data available.
                                 </td>
                             </tr>
                         {:else}
-                            {#each data as row, index}
-                                <tr class="even:bg-orange-100 odd:bg-orange-50 transition-all duration-300">
-                                    <td class="px-6 py-4 border-b text-sm text-center text-gray-700">{new Date(row.report_date).toLocaleDateString()}</td>
-                                    <td class="px-6 py-4 border-b text-sm text-center text-gray-700">{row.employee_name}</td>
-                                    
-                                    
+                            {#each filteredData as row, index}
+                                <tr class="bg-white hover:bg-gray-100 transition-all">
+                                    <td class="px-6 py-4 border-b text-sm text-center">{new Date(row.report_date).toLocaleDateString("en-GB")}</td>
+                                    <td class="px-6 py-4 border-b text-sm text-center">{row.employee_name}</td>
+                                    <td class="px-6 py-4 border-b text-sm text-center">{row.premises}</td>
+                                    <td class="px-6 py-4 border-b text-sm text-center">{row.site_location}</td>
+                                    <td class="px-6 py-4 border-b text-sm text-center">{row.client_name}</td>
                                     <td class="px-6 py-4 border-b text-sm text-center">
-                                        <button 
-                                            class="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600"
-                                            on:click={() => expandedRow = expandedRow === index ? null : index}>
+                                        <button class="px-4 py-2 bg-black text-white rounded" on:click={() => expandedRow = expandedRow === index ? null : index}>
                                             {expandedRow === index ? "Hide" : "View"}
+                                        </button>
+                                        <button class="ml-2 px-4 py-2 bg-red-500 text-white rounded" on:click={() => confirmDelete(row)}>
+                                            Delete
                                         </button>
                                     </td>
                                 </tr>
-                                <!-- Expanded Row Details -->
-                                {#if expandedRow === index}
-                                    <tr class="bg-orange-50">
-                                        <td colspan="3" class="px-6 py-4">
-                                            <p><strong>Employee Name:</strong> {row.employee_name}</p>
-                                            <p><strong>Premises:</strong> {row.premises}</p>
-                                            <p><strong>Site Location:</strong> {row.site_location}</p>
-                                            <p><strong>Client Name:</strong> {row.client_name}</p>
-                                            <p><strong>Scope Of Work:</strong> {row.scope_of_work}</p>
-                                            <p><strong>Work Details:</strong> {row.work_details}</p>
-                                            <p><strong>Joint Visits:</strong> {row.joint_visits}</p>
-                                            <p><strong>Support Needed:</strong> {row.support_needed}</p>
-                                            <p><strong>Status Of Work:</strong> {row.status_of_work}</p>
-                                            <p><strong>Priority:</strong> {row.priority_of_work}</p>
-                                            <p><strong>Next Action Plan:</strong> {row.next_action_plan}</p>
-                                            <p><strong>Result:</strong> {row.result}</p>
-                                            <p><strong>Type Of Work:</strong> {row.type_of_work}</p>
-                                            <p><strong>Closing Time:</strong> {row.closing_time}</p>
-                                            <p><strong>Contact Person:</strong> {row.contact_person_name}</p>
-                                            <p><strong>Customer Email ID:</strong> {row.contact_emailid}</p>
-                                        </td>
-                                    </tr>
-                                {/if}
                             {/each}
                         {/if}
                     </tbody>
@@ -118,10 +157,22 @@
         {/if}
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-orange-600 text-white py-4 shadow-inner">
-        <div class="container mx-auto px-4 text-center text-sm">
-            <p>&copy; 2024 SRA BAO. All Rights Reserved.</p>
+    <!-- Confirmation Modal -->
+    {#if isModalOpen}
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+            <h2 class="text-lg font-semibold mb-4">Confirm Deletion</h2>
+            <p class="text-sm mb-4">Are you sure you want to delete the report for <strong>{employeeToDelete?.employee_name}</strong>?</p>
+            <div class="flex justify-center space-x-4">
+                <button class="px-4 py-2 bg-gray-300 text-black rounded" on:click={closeModal}>Cancel</button>
+                <button class="px-4 py-2 bg-red-500 text-white rounded" on:click={deleteEmployee}>Delete</button>
+            </div>
         </div>
+    </div>
+    {/if}
+
+    <!-- Footer -->
+    <footer class="bg-black text-white py-3 text-center text-sm shadow-inner">
+        <p>&copy; 2024 SRA BAO. All Rights Reserved.</p>
     </footer>
 </div>

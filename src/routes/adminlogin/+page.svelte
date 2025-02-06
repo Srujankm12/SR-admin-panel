@@ -2,8 +2,8 @@
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  let email = '';
-  let password = '';
+  let admin_email = '';
+  let admin_password = '';
   let loading = false;
   let errorMessage = '';
   let successMessage = '';
@@ -18,9 +18,9 @@
       successMessage = '';
 
       try {
-          const response = await fetch("http://localhost:8000/login", {
+          const response = await fetch("http://localhost:8000/admin/login", {
               method: "POST",
-              body: JSON.stringify({ email, password }),
+              body: JSON.stringify({ admin_email, admin_password }),
           });
 
           if (response.ok) {
@@ -29,8 +29,8 @@
               successMessage = "Login successful! Redirecting...";
               showSuccess = true;
               setTimeout(() => {
-                  goto("/adminlogin/" + data.message);
-              }, 2000); // Redirect after a short delay
+                  goto("/adminlogin/" + data.admin_id);
+              }, 2000); 
           } else {
               const jsonResponse = await response.json();
               errorMessage = jsonResponse.message || 'Invalid email or password.';
@@ -50,14 +50,10 @@
   };
 </script>
 
-
-
-
+  <div class="flex justify-center items-center min-h-screen bg-white">
   
-  <div class="flex justify-center items-center min-h-screen bg-gradient-to-br from-orange-100 via-white to-orange-50">
-    <!-- Login Card -->
-    <div class="bg-white shadow-2xl rounded-lg p-8 max-w-md w-full border-t-4 border-orange-500">
-      <!-- Logo and Company Name -->
+    <div class="bg-white shadow-2xl rounded-lg p-8 max-w-md w-full border-t-4 border-black">
+   
       <div class="text-center mb-8">
         <img src="/logo.jpeg" alt="SR Automation Logo" class="mx-auto w-20 h-20 mb-4" />
         <h1 class="text-4xl font-bold text-gray-800">SR Automation</h1>
@@ -66,13 +62,13 @@
         </p>
       </div>
       {#if showError}
-<div class="bg-white border border-orange-500 text-orange-600 font-medium p-4 rounded mb-4">
+<div class="bg-white border border-black text-white font-medium p-4 rounded mb-4">
     {errorMessage}
 </div>
 {/if}
 
 {#if showSuccess}
-<div class="bg-orange-100 text-orange-800 font-medium p-4 rounded mb-4">
+<div class="bg-white text-black font-medium p-4 rounded mb-4">
     {successMessage}
 </div>
 {/if}
@@ -87,9 +83,9 @@
           <input
             id="email"
             type="email"
-            bind:value={email}
+            bind:value={admin_email}
             required
-            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 placeholder-gray-400"
+            class="mt-1 block w-full px-4 py-3 border  rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black placeholder-gray-400"
             placeholder="Enter your email"
           />
         </div>
@@ -100,15 +96,15 @@
           <input
             id="password"
             type="password"
-            bind:value={password}
+            bind:value={admin_password}
             required
-            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-orange-500 focus:border-orange-500 placeholder-gray-400"
+            class="mt-1 block w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-1 focus:ring-black focus:border-black placeholder-gray-400"
             placeholder="Enter your password"
           />
         </div>
         <button
         type="submit"
-        class="w-full flex justify-center items-center bg-orange-600 text-white font-semibold py-3 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-orange-400 focus:ring-offset-2 hover:bg-orange-700 transition"
+        class="w-full flex justify-center items-center bg-black text-white font-semibold py-3 rounded-xl text-lg focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 hover:bg-black transition"
     >
         {#if loading}
             <div class="animate-spin rounded-full h-6 w-6 border-t-4 border-white border-solid"></div>
