@@ -86,7 +86,7 @@
 {/if}
 
 <div class="min-h-screen flex flex-col bg-gray-100 text-gray-900">
-    <!-- Header -->
+
     <header class="bg-black text-white py-4 shadow-lg">
         <div class="container mx-auto flex items-center justify-between px-6">
             <div class="flex items-center space-x-3">
@@ -105,8 +105,6 @@
             />
         </div>
     </header>
-
-    <!-- Main Content -->
     <main class="flex-grow bg-white p-8">
         {#if isLoading}
             <div class="flex justify-center items-center h-64">
@@ -140,19 +138,46 @@
                                     <td class="px-6 py-4 border-b text-sm text-center">{row.premises}</td>
                                     <td class="px-6 py-4 border-b text-sm text-center">{row.site_location}</td>
                                     <td class="px-6 py-4 border-b text-sm text-center">{row.client_name}</td>
+                                    
                                     <td class="px-6 py-4 border-b text-sm text-center">
                                         <button class="px-4 py-2 bg-black text-white rounded" on:click={() => expandedRow = expandedRow === index ? null : index}>
                                             {expandedRow === index ? "Hide" : "View"}
+                                            
                                         </button>
+                                  
                                         <button class="ml-2 px-4 py-2 bg-red-500 text-white rounded" on:click={() => confirmDelete(row)}>
                                             Delete
                                         </button>
                                     </td>
                                 </tr>
+                                {#if expandedRow === index}
+                                    <tr class="bg-white">
+                                        <td colspan="3" class="px-6 py-4">
+                                         
+                                            <p><strong>Scope Of Work:</strong> {row.scope_of_work}</p>
+                                            <p><strong>Work Details:</strong> {row.work_details}</p>
+                                            <p><strong>Joint Visits:</strong> {row.joint_visits}</p>
+                                            <p><strong>Support Needed:</strong> {row.support_needed}</p>
+                                            <p><strong>Status Of Work:</strong> {row.status_of_work}</p>
+                                            <p><strong>Priority:</strong> {row.priority_of_work}</p>
+                                            <p><strong>Next Action Plan:</strong> {row.next_action_plan}</p>
+                                            <p><strong>Result:</strong> {row.result}</p>
+                                            <p><strong>Type Of Work:</strong> {row.type_of_work}</p>
+                                            <p><strong>Closing Time:</strong> {row.closing_time}</p>
+                                            <p><strong>Contact Person:</strong> {row.contact_person_name}</p>
+                                            <p><strong>Customer Email ID:</strong> {row.contact_emailid}</p>
+                                        </td>
+                                    </tr>
+                                {/if}
                             {/each}
                         {/if}
                     </tbody>
                 </table>
+            </div>
+            <div class="py-4 flex justify-center items-center fixed bottom-10 left-0 right-0 text-center">
+                <button class="text-white bg-black rounded-md px-9 py-2" >
+                    Download
+                </button>
             </div>
         {/if}
     </main>
