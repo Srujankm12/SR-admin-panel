@@ -11,9 +11,37 @@
     let successMessage = "";
     let errorMessage = "";
     let expandedRow = null;
+    let showDownloadMessage = false; 
 
     const apiUrl = `http://localhost:8000/admin/fetch`;
     const deleteUrl = `http://localhost:8000/admin/delete/`;
+    const downloadexcel = `http://localhost:8000/excel`;
+
+      const downloadexceltechnical = async () => {
+        try {
+            const response = await fetch(downloadexcel, {
+                method: "GET",                     
+            });
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "technical.xlsx";
+                a.click();
+                window.URL.revokeObjectURL(url);
+            } else {
+                console.error("Failed to download Excel file:", response.statusText);
+            }
+        } catch (error) {
+            console.error("Error downloading Excel file:", error);
+        }
+        showDownloadMessage = true;
+        setTimeout(() => {
+            showDownloadMessage = false;
+        }, 3000);
+    };
+
 
     onMount(async () => {
         try {
@@ -175,12 +203,20 @@
                 </table>
             </div>
             <div class="py-4 flex justify-center items-center fixed bottom-10 left-0 right-0 text-center">
-                <button class="text-white bg-black rounded-md px-9 py-2" >
+                <button class="text-white bg-black rounded-md px-9 py-2" 
+                on on:click={downloadexceltechnical}
+                >
+
                     Download
                 </button>
             </div>
         {/if}
     </main>
+    {#if showDownloadMessage}
+    <div class="fixed bottom-12 right-4 bg-black text-white font-semibold p-4 rounded-md shadow-2xl duration-300" transition:fade>
+        Excel downloaded successfully!
+    </div>
+{/if}
 
     <!-- Confirmation Modal -->
     {#if isModalOpen}
