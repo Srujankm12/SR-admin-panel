@@ -1,5 +1,6 @@
 <script>
-    import { onMount } from "svelte";
+    import Header from "$lib/header.svelte";
+import { onMount } from "svelte";
     import { fade } from "svelte/transition";
 
     let data = [];
@@ -104,7 +105,7 @@
     }
 </script>
 
-<!-- Success & Error Message -->
+
 {#if successMessage || errorMessage}
 <div class="fixed bottom-14 right-5 bg-black text-white font-semibold p-4 rounded-lg shadow-2xl duration-300 flex items-center space-x-2"
      transition:fade>
@@ -115,28 +116,20 @@
 
 <div class="min-h-screen flex flex-col bg-gray-100 text-gray-900">
 
-    <header class="bg-black text-white py-4 shadow-lg">
-        <div class="container mx-auto flex items-center justify-between px-6">
-            <div class="flex items-center space-x-3">
-                <img src="/logo.jpeg" alt="SRA BAO Logo" class="w-12 h-12 rounded-full border-2 border-white shadow-md" />
-                <div>
-                    <h1 class="text-xl font-bold">SRA BAO</h1>
-                    <p class="text-xs opacity-75">Daily Reporting System</p>
-                </div>
-            </div>
-            <input 
-                type="text" 
-                bind:value={searchQuery} 
-                on:input={filterResults} 
-                placeholder="Search reports..."
-                class="px-4 py-2 text-sm rounded-lg focus:ring-2 focus:ring-white bg-white text-black w-64 outline-none shadow-sm border"
-            />
-        </div>
-    </header>
-    <main class="flex-grow bg-white p-8">
+ <Header />
+    <main class="flex-grow bg-white py-28 px-4">
+        <div class="relative w-full flex justify-end bg-white">
+        <input
+        type="text"
+        bind:value={searchQuery}
+        on:input={filterResults}
+        placeholder="Search by EmployeeName or Date"
+        class="px-3 py-1  w-80 mb-4 shadow-md border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none "
+      />
+    </div>
         {#if isLoading}
-            <div class="flex justify-center items-center h-64">
-                <div class="w-16 h-16 border-4 border-gray-300 border-t-black rounded-full animate-spin"></div>
+            <div class="flex justify-center items-center h-full">
+                <div class="animate-spin h-12 w-12 rounded-full border-t-4 border-gray-800"></div>
             </div>
         {:else}
             <div class="overflow-x-auto rounded-lg shadow-md bg-white">
@@ -202,7 +195,7 @@
                     </tbody>
                 </table>
             </div>
-            <div class="py-4 flex justify-center items-center fixed bottom-10 left-0 right-0 text-center">
+            <div class="py-8 flex justify-center items-center fixed bottom-3  left-0 right-0 text-center">
                 <button class="text-white bg-black rounded-md px-9 py-2" 
                 on on:click={downloadexceltechnical}
                 >
@@ -218,7 +211,7 @@
     </div>
 {/if}
 
-    <!-- Confirmation Modal -->
+  
     {#if isModalOpen}
     <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
@@ -232,8 +225,6 @@
     </div>
     {/if}
 
-    <!-- Footer -->
-    <footer class="bg-black text-white py-3 text-center text-sm shadow-inner">
-        <p>&copy; 2024 SRA BAO. All Rights Reserved.</p>
-    </footer>
+
+  
 </div>

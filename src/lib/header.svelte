@@ -42,7 +42,7 @@
                     <li>
                         <button
                             class="w-full text-left text-lg font-medium text-gray-700 hover:bg-gray-100 px-4 py-2 rounded-lg"
-                            on:click={() => { goto('/login/' + $page.params.mainpage ); toggleDrawer(); }}
+                            on:click={() => { goto('/adminlogin/'+$page.params.mainpage ); toggleDrawer(); }}
                         >
                             <i class="fa-solid fa-house mr-3"></i> Home
                         </button>
