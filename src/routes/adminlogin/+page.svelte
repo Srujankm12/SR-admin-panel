@@ -78,7 +78,7 @@
       </div>
 
   
-      <!-- Login Form -->
+
       <form on:submit|preventDefault={handleLogin} class="space-y-6">
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700">
@@ -118,7 +118,7 @@
     </button>
       </form>
   
-      <!-- Footer -->
+  
       <div class="mt-4 text-center text-sm text-gray-500">
         
       </div>
