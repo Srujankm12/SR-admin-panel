@@ -26,7 +26,7 @@
           if (response.ok) {
               const data = await response.json();
               console.log("Login successful:", data);
-              successMessage = "Login successful! Redirecting...";
+              successMessage = "Login successful!!!";
               showSuccess = true;
               setTimeout(() => {
                   goto("/adminlogin/" + data.admin_id);
@@ -61,17 +61,21 @@
         
         </p>
       </div>
-      {#if showError}
-<div class="bg-white border border-black text-white font-medium p-4 rounded mb-4">
-    {errorMessage}
-</div>
-{/if}
-
-{#if showSuccess}
-<div class="bg-white text-black font-medium p-4 rounded mb-4">
-    {successMessage}
-</div>
-{/if}
+      <div class="relative">
+        {#if successMessage}
+          <div class="fixed bottom-4 right-4 bg-black text-white px-4 py-2 rounded shadow-lg">
+            {successMessage}
+          </div>
+        {/if}
+      
+        {#if errorMessage}
+          <div class="fixed bottom-4 right-4  bg-black text-white px-4 py-2 rounded shadow-lg">
+            {errorMessage}
+          </div>
+        {/if}
+      
+      
+      </div>
 
   
       <!-- Login Form -->
