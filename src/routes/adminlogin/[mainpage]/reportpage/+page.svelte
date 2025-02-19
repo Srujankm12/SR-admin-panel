@@ -166,7 +166,7 @@ import { onMount } from "svelte";
                                             
                                         </button>
                                   
-                                        <button class="ml-2 px-4 py-2 bg-red-500 text-white rounded" on:click={() => confirmDelete(row)}>
+                                        <button class="ml-2 px-4 py-2 bg-red-600 text-white rounded" on:click={() => confirmDelete(row)}>
                                             Delete
                                         </button>
                                     </td>
@@ -197,9 +197,8 @@ import { onMount } from "svelte";
             </div>
             <div class="py-8 flex justify-center items-center fixed bottom-3  left-0 right-0 text-center">
                 <button class="text-white bg-black rounded-md px-9 py-2" 
-                on on:click={downloadexceltechnical}
+                     on:click={downloadexceltechnical}
                 >
-
                     Download
                 </button>
             </div>
@@ -209,7 +208,7 @@ import { onMount } from "svelte";
     <div class="fixed bottom-12 right-4 bg-black text-white font-semibold p-4 rounded-md shadow-2xl duration-300" transition:fade>
         Excel downloaded successfully!
     </div>
-{/if}
+    {/if}
 
   
     {#if isModalOpen}
@@ -225,6 +224,4 @@ import { onMount } from "svelte";
     </div>
     {/if}
 
-
-  
 </div>

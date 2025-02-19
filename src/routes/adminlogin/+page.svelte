@@ -73,12 +73,7 @@
             {errorMessage}
           </div>
         {/if}
-      
-      
       </div>
-
-  
-
       <form on:submit|preventDefault={handleLogin} class="space-y-6">
         <div>
           <label for="email" class="block text-sm font-medium text-gray-700">
@@ -115,12 +110,9 @@
         {:else}
             Login
         {/if}
-    </button>
+      </button>
       </form>
-  
-  
       <div class="mt-4 text-center text-sm text-gray-500">
-        
       </div>
     </div>
   </div>
