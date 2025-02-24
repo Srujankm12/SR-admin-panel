@@ -18,7 +18,7 @@
       successMessage = '';
 
       try {
-          const response = await fetch("http://localhost:8000/admin/login", {
+          const response = await fetch("https://sr-backend-go.onrender.com/admin/login", {
               method: "POST",
               body: JSON.stringify({ admin_email, admin_password }),
           });

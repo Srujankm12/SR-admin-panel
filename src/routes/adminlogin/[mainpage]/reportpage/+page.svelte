@@ -14,9 +14,9 @@ import { onMount } from "svelte";
     let expandedRow = null;
     let showDownloadMessage = false; 
 
-    const apiUrl = `http://localhost:8000/admin/fetch`;
-    const deleteUrl = `http://localhost:8000/admin/delete/`;
-    const downloadexcel = `http://localhost:8000/excel`;
+    const apiUrl = `https://sr-backend-go.onrender.com/admin/fetch`;
+    const deleteUrl = `https://sr-backend-go.onrender.com/admin/delete/`;
+    const downloadexcel = `https://sr-backend-go.onrender.com/excel`;
 
       const downloadexceltechnical = async () => {
         try {
@@ -103,8 +103,8 @@ import { onMount } from "svelte";
         isModalOpen = false;
         employeeToDelete = null;
     }
-</script>
 
+</script>
 
 {#if successMessage || errorMessage}
 <div class="fixed bottom-14 right-5 bg-black text-white font-semibold p-4 rounded-lg shadow-2xl duration-300 flex items-center space-x-2"
@@ -113,9 +113,7 @@ import { onMount } from "svelte";
     <span>{successMessage || errorMessage}</span>
 </div>
 {/if}
-
 <div class="min-h-screen flex flex-col bg-gray-100 text-gray-900">
-
  <Header />
     <main class="flex-grow bg-white py-28 px-4">
         <div class="relative w-full flex justify-end bg-white">
@@ -159,13 +157,10 @@ import { onMount } from "svelte";
                                     <td class="px-6 py-4 border-b text-sm text-center">{row.premises}</td>
                                     <td class="px-6 py-4 border-b text-sm text-center">{row.site_location}</td>
                                     <td class="px-6 py-4 border-b text-sm text-center">{row.client_name}</td>
-                                    
                                     <td class="px-6 py-4 border-b text-sm text-center">
                                         <button class="px-4 py-2 bg-black text-white rounded" on:click={() => expandedRow = expandedRow === index ? null : index}>
-                                            {expandedRow === index ? "Hide" : "View"}
-                                            
+                                            {expandedRow === index ? "Hide" : "View"} 
                                         </button>
-                                  
                                         <button class="ml-2 px-4 py-2 bg-red-600 text-white rounded" on:click={() => confirmDelete(row)}>
                                             Delete
                                         </button>
@@ -174,7 +169,6 @@ import { onMount } from "svelte";
                                 {#if expandedRow === index}
                                     <tr class="bg-white">
                                         <td colspan="3" class="px-6 py-4">
-                                         
                                             <p><strong>Scope Of Work:</strong> {row.scope_of_work}</p>
                                             <p><strong>Work Details:</strong> {row.work_details}</p>
                                             <p><strong>Joint Visits:</strong> {row.joint_visits}</p>
@@ -210,7 +204,6 @@ import { onMount } from "svelte";
     </div>
     {/if}
 
-  
     {#if isModalOpen}
     <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
         <div class="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
@@ -223,5 +216,4 @@ import { onMount } from "svelte";
         </div>
     </div>
     {/if}
-
 </div>
