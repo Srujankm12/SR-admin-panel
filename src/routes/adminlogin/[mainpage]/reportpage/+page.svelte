@@ -176,7 +176,7 @@ import { onMount } from "svelte";
                                             <p><strong>Status Of Work:</strong> {row.status_of_work}</p>
                                             <p><strong>Priority:</strong> {row.priority_of_work}</p>
                                             <p><strong>Next Action Plan:</strong> {row.next_action_plan}</p>
-                                            <p><strong>Result:</strong> {row.result}</p>
+                                          
                                             <p><strong>Type Of Work:</strong> {row.type_of_work}</p>
                                             <p><strong>Closing Time:</strong> {row.closing_time}</p>
                                             <p><strong>Contact Person:</strong> {row.contact_person_name}</p>
